@@ -34,25 +34,36 @@ def login():
     print 'already online'
     return False
 
-  print f.read()
+  req = f.read()
+  if req.find('已成功登录') != -1:
+    print 'we are online!'
+    return True
 
-  return True
+  print req
+  return False
 
 
 def logout():
   logout_url = "http://10.2.255.254:81"
   logout_data = "logout=1"
 
-  f = urllib2.urlopen(url=logout_url, data=logout_data)
+  try:
+    f = urllib2.urlopen(url=logout_url, data=logout_data)
+  except:
+    return False
 
-  print f.read()
-
-  return
+  print 'we get off!'
+  return True
 
 
 if __name__ == "__main__":
   if len(sys.argv) <= 1 or sys.argv[1].lower() != "logout":
-    login()
+    if not login():
+      print 'will logout and re login'
+      logout()
+      import time
+      time.sleep(1)
+      login()
   else:
     logout()
 
